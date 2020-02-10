@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace DiscoGoose
 {
@@ -7,81 +8,53 @@ namespace DiscoGoose
         public int r;
         public int g;
         public int b;
-        public int state;
+
+        public int phase = 1;
+        public int center;
+        public int width;
+        public int loop;
+        public int maxLoops = 32;
+        
+        public bool up;
 
         public Color AsColor()
         {
             return Color.FromArgb(r, g, b);
         }
 
-        public RainbowRender(Color color)
-        {
-            r = color.R;
-            g = color.G;
-            b = color.B;
-        }
-
-        /* Loops don't really work here,
-         * so a dirty solution it is.
-             
-         * TODO: See if there's a way I can clean this up
-        */
         public void UpdateColor()
         {
-            if (state == 0)
+            MakeColorGradient(.3f, .3f, .3f, 0, 2, 4, loop);
+            
+            if (up)
             {
-                g++;
-                if (g >= 255)
+                if (loop == maxLoops)
                 {
-                    g = 255;
-                    state = 1;
+                    up = false;
+                }
+                else
+                {
+                    loop++;
                 }
             }
-            if (state == 1)
+            else
             {
-                r--;
-                if (r <= 0)
+                if (loop == 0)
                 {
-                    r = 0;
-                    state = 2;
+                    up = true;
+                }
+                else
+                {
+                    loop--;
                 }
             }
-            if (state == 2)
-            {
-                b++;
-                if (b >= 255)
-                {
-                    b = 255;
-                    state = 3;
-                }
-            }
-            if (state == 3)
-            {
-                g--;
-                if (g <= 0)
-                {
-                    g = 0;
-                    state = 4;
-                }
-            }
-            if (state == 4)
-            {
-                r++;
-                if (r >= 255)
-                {
-                    r = 255;
-                    state = 5;
-                }
-            }
-            if (state == 5)
-            {
-                b--;
-                if (b <= 0)
-                {
-                    b = 0;
-                    state = 0;
-                }
-            }
+        }
+
+        public void MakeColorGradient(float frequency1, float frequency2, float frequency3, float phase1, float phase2, float phase3, int index, int center = 128, int width = 127)
+        {
+            r = (int)(Math.Sin(frequency1 * index + phase1) * width + center);
+            g = (int)(Math.Sin(frequency2 * index + phase2) * width + center);
+            b = (int)(Math.Sin(frequency3 * index + phase3) * width + center);
         }
     }
 }
