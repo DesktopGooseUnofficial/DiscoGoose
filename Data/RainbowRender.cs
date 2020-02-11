@@ -24,8 +24,7 @@ namespace DiscoGoose.Data
             int gDist = Math.Abs(AsColor().G - other.G);
             int bDist = Math.Abs(AsColor().B - other.B);
 
-
-            return rDist + gDist + bDist > 5;
+            return rDist + gDist + bDist > 150;
         }
 
         public RainbowRender(bool randomizeColor = false)
